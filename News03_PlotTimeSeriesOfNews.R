@@ -1,6 +1,19 @@
 #Display teime series of candles, while poitning out position of critical zigzags and returns
 
-setwd("D:/Scrips/Trading/OptiMoraR/")
+setwd("D:/Scrips/Trading/News/")
+
+#Complete list of news
+  News=read.csv("D:/Scrips/Trading/News/ForexNewsData.csv")
+  News$X=NULL
+
+#news already deamed important from code 1. they filter swings and returns larger than 2%
+  NewsThatFilterSwings=read.csv("D:/Scrips/Trading/News/News01_CriticalNews_ListByPair_SwingsOnly.csv") 
+  NewsThatFilterReturns=read.csv("D:/Scrips/Trading/News/News01_CriticalNews_ListByPair_ReturnsAndSwing.csv")
+
+#Forex data
+  ForexData=fread("D:/Scrips/Trading/ForexPairs2YrsAll.csv") #ForexPairs2YrsAll  ForexPairs2Months.csv
+  ForexData=ForexData %>% rename("X" = "V1")
+
 ###############################################################################################################################
 ########-----------------------------------------FUNCTIONS-------------------------------------------------------------########
 ###############################################################################################################################
@@ -146,10 +159,7 @@ ZigZagDDWated=2 #largest etesion in price used for sqing selection...used smalle
 PerCorrection=0.25 #Percent of correction tested. This is used to calcualte zigzag of this size of large. Basically, times when market extended before having a correction of this size
 
 
-ForexData=fread("D:/Scrips/Trading/ForexPairs2YrsAll.csv") #ForexPairs2YrsAll  ForexPairs2Months.csv
 
-
-ForexData=ForexData %>% rename("X" = "V1")
 
 
 ###############################################################################################################################
@@ -227,24 +237,15 @@ SwingsData=as.data.frame(SwingsData)
 
 
 ###############################################################################################################################
-########---------------START-------------------NEWS for swings---------------------------------------------------------########
-###############################################################################################################################
-News=read.csv("D:/Scrips/Trading/OptiMoraR/ForexNewsData.csv")
-News$X=NULL
-###############################################################################################################################
-########---------------end---------------------NEWS for swings---------------------------------------------------------########
-###############################################################################################################################
-
-
-
-
-###############################################################################################################################
 ###-------------------------------------------------Create Plot-------------------------------------------------------------###
 ###############################################################################################################################
 
 
 for (TickerX in PAIRS){
 
+  NewsThatFilterSwinI=NewsThatFilterSwings %>% filter(Ticker==TickerX)
+  NewsThatFilterReturnsI=NewsThatFilterReturns %>% filter(Ticker==TickerX)
+  
   Data1MinTickerI=ForexData[TickerNam==TickerX, ]
   Data1MinTickerI$X=1:nrow(Data1MinTickerI)
   
@@ -297,7 +298,7 @@ for (TickerX in PAIRS){
   
 #Plots critical returns and zigzags
   Axis=rbind(head(Data1MinTickerI,1),tail(Data1MinTickerI,1))
-  PlotCriticalReturns <- dygraphs::dygraph(Axis[,c("X", "Y")], group="X", width = 1800, height=150)%>%  dyOptions (strokeWidth= 0 ,drawPoints= TRUE) %>%  dyAxis("x", drawGrid =FALSE) %>%  dyAxis("y", drawGrid =FALSE) %>% dyAxis("y", valueRange = c(0, 1) )
+  PlotCriticalReturns <- dygraphs::dygraph(Axis[,c("X", "Y")], group="X", width = 1800, height=100, main = "Critical Points Not Filtered")%>%  dyOptions (strokeWidth= 0 ,drawPoints= TRUE) %>%  dyAxis("x", drawGrid =FALSE) %>%  dyAxis("y", drawGrid =FALSE) %>% dyAxis("y", valueRange = c(0, 1) )
   
   
   CriticalReturns=Returns[[2]]
@@ -351,14 +352,25 @@ for (TickerX in PAIRS){
 
   
   Dygraph=Dygraph %>% dyEvent(NewsTickerIDByDate$X, NewsTickerIDByDate$event, labelLoc = "top",color ="grey")
+
+#News that filter. this are the set of critical news on the time profile  
+  TimeProfileCriticSwings  = NewsTickerIDByDate %>% filter (event %in% NewsThatFilterSwinI$NameCriticalNews)
+  TimeProfileCriticSwings=data.frame(X=TimeProfileCriticSwings$X,Y=0.5)
+  
+  TimeProfileCriticReturns = NewsTickerIDByDate %>% filter (event %in% NewsThatFilterReturnsI$NameCriticalNews)
+  TimeProfileCriticReturns=data.frame(X=TimeProfileCriticReturns$X,Y=0.5)
+  
+  NewsSwings=dygraphs::dygraph(TimeProfileCriticSwings, group="X", width = 1800, height=100, main = "SwingNews")%>%  dyOptions (colors ="red",strokeWidth= 0 ,drawPoints= TRUE) %>%  dyAxis("x", drawGrid =FALSE) %>%  dyAxis("y", drawGrid =FALSE) %>% dyAxis("y", valueRange = c(0, 1) )
+  
+  NewsReturns=dygraphs::dygraph(TimeProfileCriticReturns, group="X", width = 1800, height=100, main = "ReturnNews")%>%  dyOptions (colors ="red",strokeWidth= 0 ,drawPoints= TRUE) %>%  dyAxis("x", drawGrid =FALSE) %>%  dyAxis("y", drawGrid =FALSE) %>% dyAxis("y", valueRange = c(0, 1) )
   
   #Merge candles with critical returns and zigzags
-  CombinedPlot=list(Dygraph,PlotCriticalReturns)
+  CombinedPlot=list(Dygraph,PlotCriticalReturns, NewsSwings, NewsReturns)
   
   
  HTML= htmltools::browsable(htmltools::tagList(CombinedPlot))
   
- FileName=paste0("SwingsNews_",TickerX, ".html")
+ FileName=paste0("News_",TickerX, ".html")
  save_html(HTML, FileName, background = "white", libdir = "lib", lang = "en")
 }
 
