@@ -1,0 +1,1871 @@
+---
+title: "Effects of news on price changes"
+output: html_document
+---
+  
+  <style>
+  .main-container {
+    max-width: 940px;
+    margin-left: 0;
+    margin-right: auto;
+  }
+</style>
+  
+  
+  Version: 1.0
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+# This code creates a wedpages for all pairs, pf  how their extreme returns and swings are filtered by news. Plus it returns the list of Critical news. yhe list of "Critical news" generated  can be used in the actual bot to filter incoming critical news. One has to run news02 to create the list of critical DAYS, which are all the days when a critical news is reported and  is used in the optimization to check for the effects of removing days with crtiical news to be used as filter in the optimization of robots, as part of the money managmente, safity procedures.
+#This code includes the days before, during and after the news, we found this was more effective at removing all swings and returns larger than 2% that just using the day the news were reporte. One losses for tradingdays, but plays safer.
+
+#library(sqldf)
+library(purrr)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(Stocks)
+library(zoo)
+library(data.table)
+
+MinDDWanted=2 #percent of account wanted to be at maximum DD for this pair. 
+ZigZagDDWated=2 #largest etesion in price used for sqing selection...used smaller than the returns DD wated..
+PerCorrection=0.5 #Percent of correction tested. This is used to calcualte zigzag of this size of large. Basically, times when market extended before having a correction of this size
+FreqNewExc=10     #Percent frequency above which news are excluded. some news like crude oil reports aer reporeted each week, byt the sheer number they can coincide with critical events.
+
+ForexData=fread("D:/Scrips/Trading/ForexPairs2YrsAll.csv") #ForexPairs2YrsAll  ForexPairs2Months.csv
+ForexData=ForexData %>% rename("X" = "V1")
+
+
+###############################################################################################################################
+########---------------START-------------------NEWS for swings---------------------------------------------------------########
+###############################################################################################################################
+    News=read.csv("D:/Scrips/Trading/News/ForexNewsData.csv")
+    News$From=as.Date(News$DateUTC,  format ="%Y-%m-%d")
+    News=News[, c("currency", "event", "impact","From") ]
+    News$To=News$From
+    News$Ocurrence="_D_"
+    News$Day=lubridate::wday(News$From, week_start=1)
+    News$OcurrenceRank=1 #used to rank the different filters (e.g. same day(1)), before (2), after(2), or all beforeduring and after(3), in cases when the results of the filters are the same. Best is 1
+      
+      DayAfter=DayBefore=DayBeforeAfter=News
+      
+    #Range for same day and day after
+      DayAfter$Ocurrence="_DA"
+      DayAfter$To <- fifelse(DayAfter$Day >= 5, DayAfter$From+(7-DayAfter$Day+1), DayAfter$From+1) #if news annoument done from friday to Sunday, then block Monday trading
+      DayAfter$OcurrenceRank=2
+    #Range for same day and day after
+      DayBefore$Ocurrence="BD_"
+      DayBefore$From <- fifelse(DayBefore$Day == 1 , DayBefore$To-3, fifelse(DayBefore$Day == 7 , DayBefore$To-2, DayBefore$To-1))#if news announcement done from Saturday to Monday, then block Friday trading
+      DayBefore$OcurrenceRank=2
+    #Range for before, same, and after day of news announcement
+      DayBeforeAfter$Ocurrence="BDA"
+      DayBeforeAfter$From <- DayBefore$From
+      DayBeforeAfter$To   <- DayAfter$To
+      DayBeforeAfter$OcurrenceRank=3
+      
+     News= do.call("rbind", list(DayAfter,DayBefore,DayBeforeAfter,News))
+
+###############################################################################################################################
+########---------------end---------------------NEWS for swings---------------------------------------------------------########
+###############################################################################################################################
+
+#Set WD
+Path=dirname(rstudioapi::getSourceEditorContext()$path)
+setwd(Path)
+
+###############################################################################################################################
+########-----------------------------------------FUNCTIONS-------------------------------------------------------------########
+###############################################################################################################################
+
+PlotReturnsByNews <- function(Ticker, Date,Change,News){
+
+          DataI=data.frame(Date=Date, Change=Change)
+        #news for given pair
+          News1=News %>% filter(currency == substr(Ticker, 1, 3))
+          News2=News %>% filter(currency == substr(Ticker, 4, 6))
+        
+          NewsI=rbind(News1,News2) #Concantenate news from both pairs
+       
+        #Merge
+          ReturnNewsI= left_join(DataI,NewsI, join_by(between(Date, From, To)))
+          
+        #Returns by news type...resume the variation in return when each news is reported
+          ReturnNewsI =ReturnNewsI %>% group_by(event) %>% summarise(MinChange = min(Change, na.rm=T),MaxChange = max(Change, na.rm=T))
+        
+          ReturnNewsI=data.frame(ReturnNewsI)
+          ReturnNewsI$MinChange=round(ReturnNewsI$MinChange,2)
+          ReturnNewsI$MaxChange=round(ReturnNewsI$MaxChange,2)
+          ReturnNewsI=ReturnNewsI %>% arrange(desc(MaxChange))
+          ReturnNewsI$Rank=(1:nrow(ReturnNewsI))
+          ReturnNewsI$Critical=ifelse(abs(ReturnNewsI$MaxChange)>=MinDDWanted, "Yes","No")
+          
+          ReturnNewsI <- na.omit(ReturnNewsI)
+          
+          Plot_ReturnRangeByNews = plot_ly(ReturnNewsI, x = ~Rank, xend = ~Rank, y = ~MinChange, yend = ~MaxChange, 
+                  text = ~event, hoverinfo = "event") %>% 
+            add_segments(color = ~Critical,
+                         colors = c("Yes" = "red", "No" = "blue")) %>% 
+                  layout(
+                   showlegend = F,
+                   plot_bgcolor="rgba(0, 0, 0, 0)",
+                   xaxis = list(
+                     title ="",
+                     zerolinecolor = '#ffff',
+                     zerolinewidth = 2,
+                     gridcolor = "rgba(0, 0, 0, 0)",
+                     tickvals = ReturnNewsI$Rank, ticktext = ReturnNewsI$event,
+                     tickfont = list(size = 7) 
+                   ),
+                   yaxis = list(
+                     title ="Range of Daily Returns (%)",
+                     zerolinecolor = '#ffff',
+                     zerolinewidth = 2)
+                  )%>%
+                add_segments(x = 0, xend = max(ReturnNewsI$Rank), y = MinDDWanted, yend = MinDDWanted, color=I("red"), line = list(dash = 'dot')) 
+        
+          
+          return(Plot_ReturnRangeByNews)
+          
+        }
+  
+
+
+#################################################################################################################################
+#-----------------------------------------------------------------------------------------------------------------------------###
+###----START-------------------------------------Funtion Effect of filtering critical changes---------------------------------###
+#-----------------------------------------------------------------------------------------------------------------------------###
+#################################################################################################################################
+
+PlotFilteringNews <- function(Ticker, Date,Change,News, CriticalThreshold, YHover, YAxisName, ExcludeFreqNewsAbovePerc){
+
+  
+         DataI=data.frame(Date=Date, Change=Change)
+         TradingDays=nrow(DataI)
+         
+        #news for given pair
+          CurrencyNameA=substr(Ticker, 1, 3)
+          News1=News %>% filter(currency == CurrencyNameA )
+       
+          
+          CurrencyNameB=substr(Ticker, 4, 6)
+          News2=News %>% filter(currency == CurrencyNameB)
+        
+        
+          NewsTickerI=rbind(News1,News2) #Concantenate news from both pairs
+          NewsTickerI$Name=NewsTickerI$event
+          NewsTickerI$event=paste0("(", NewsTickerI$currency, "/", NewsTickerI$Ocurrence, ") ",NewsTickerI$event) #unique name...same news can be in frames (before, After, etc)
+                       
+                       
+        ##remove frequent news. Frequent news can exclude critical days by their sheer occurence
+         FreqNews =NewsTickerI %>% group_by(event) %>% summarise(Frequency=n())
+         FreqNews$Fraction=FreqNews$Frequency/TradingDays*100
+         FreqNews=FreqNews %>% filter(Fraction<=ExcludeFreqNewsAbovePerc) 
+         
+         NewsTickerI=NewsTickerI %>% filter(event %in% FreqNews$event)
+         
+        #Merge database of news occurences with days in which trading occured. Matching news to change: returns or zigzags
+          ReturnNewsI= left_join(DataI,NewsTickerI, join_by(between(Date, From, To)))
+          
+          
+        #Starting results
+          NcriticalDays=sum(DataI$Change >= CriticalThreshold)
+          StartMaxDD=round(max(DataI$Change, na.rm=TRUE),2)
+          Results=data.frame(NewsI="Total",CriticalLeft=NcriticalDays, MaxDDLeft=StartMaxDD, DaysLeft=TradingDays) #Starting conditions
+          
+        #list of crtiical news..it should loop only over this list,...the other news are not important
+        CriticalDays=ReturnNewsI %>% filter(abs(Change) >=CriticalThreshold) #Select crtical days
+        NewsEvents=unique(CriticalDays$event)
+
+        
+        TemporaryResults=data.frame(NewsI=as.character(),CriticalLeft=as.numeric(),MaxDDLeft=as.numeric(), DaysLeft=as.numeric(),OccurenceRank=as.numeric())
+        NewsToRemove=c()
+        
+        if(length(NewsEvents)==0){Count=1}else{Count=0}
+        while (Count==0){
+          for (NewsI in NewsEvents){
+            DaysWithNewsI = ReturnNewsI %>% filter(event %in% c(NewsI,NewsToRemove )) #fill all days the news was reported, regardless of the effect
+            OccurenceRank=min(DaysWithNewsI $OcurrenceRank) #Collect the news rank, used later to select cases when aefefct are the same, best to select cases with fewer reductions of days
+            DaysWithNewsI=unique(DaysWithNewsI$Date) #list of unique days when news were reported
+            DaysWithNewsI=data.frame(Date=DaysWithNewsI, CriticalNews="Yes") #Label dates when news were reported as YES.
+            DaysWithNewsI=merge(DataI,DaysWithNewsI, all.x=TRUE, by="Date")  #merge days in which news was reported with the list of all dates
+            DaysWithNewsI$CriticalNews[is.na(DaysWithNewsI$CriticalNews)] <- "No" #Mark days in which the news was not reported as NO
+            
+            DaysWithNewsI =DaysWithNewsI %>% group_by(CriticalNews) %>% summarise(CriticalLeft=sum(Change >= CriticalThreshold), MaxDDLeft = max(Change, na.rm=T),  DaysLeft=n()) #summarize results for days with and without the news reported
+            
+            Vals=filter(DaysWithNewsI,CriticalNews=="No")
+            Vals$CriticalNews =NULL
+            
+            TemporaryResults=rbind(TemporaryResults,cbind(NewsI,Vals, OccurenceRank))
+          }
+          
+          TemporaryResults=TemporaryResults %>% dplyr::arrange(CriticalLeft)
+          
+          #Chose the ones that remove the most critical days while leaving the most days to trade
+          BestRemoval=TemporaryResults %>% filter(CriticalLeft ==min(CriticalLeft))
+          BestRemoval=BestRemoval %>% filter(DaysLeft ==max(DaysLeft))
+          BestRemoval=BestRemoval %>% dplyr::arrange(OccurenceRank)
+          BestRemoval$OccurenceRank=NULL
+          BestRemoval=BestRemoval[1,]
+          NewsToRemove=c(NewsToRemove, BestRemoval$NewsI)
+          Results=rbind(Results,BestRemoval)
+         if(length(NewsEvents)==length(unique(Results$NewsI))-1){Count=1} #Stop if there are no more critical news to filter
+         if(min(Results$CriticalLeft)==0){Count=1}                             #or if all critical values are filtered
+        }
+        
+
+        #Collect critical days not filtered
+            ListOfImportantNews=unique(Results$NewsI)
+            DaysOfImportantNews = ReturnNewsI %>% filter(event %in% ListOfImportantNews)
+            if(nrow(DaysOfImportantNews)>=1){
+            DaysOfImportantNews=unique(DaysOfImportantNews$Date)
+            DaysOfImportantNews=data.frame(Date=DaysOfImportantNews,Occurence="YES")
+            DaysOfImportantNews=merge(DataI,DaysOfImportantNews, all.x=TRUE, by="Date")
+            DaysOfImportantNews$Occurence[is.na(DaysOfImportantNews$Occurence)] <- "NO"
+            FilteredDaysOfImportantNews = DaysOfImportantNews %>% filter(Occurence=="NO" & Change>=CriticalThreshold)
+            NonFilterCriticalReturn=FilteredDaysOfImportantNews[,c("Date", "Change")] #list of criticl returns that were not filtered
+            }else{NonFilterCriticalReturn=data.frame(Date=NA,Change=NA)}
+            
+            
+            
+        
+        
+        Results$Rank=1:nrow(Results)
+        
+        MaxDays=length(Date)
+        Results$DaysLeft=round((Results$DaysLeft/MaxDays)*100,0)
+        Y3Name=paste0("Trading Days Left (in Percent of ",MaxDays, " days")
+        #plot relationship bwetween news and retruns
+        CriticalRemovalPlot=Stocks::Plot3YAxis(X=Results$Rank,
+                                      Y1=Results$CriticalLeft,
+                                      Y2=round(Results$MaxDDLeft,1),
+                                      Y3=Results$DaysLeft,
+                                      
+                                      XNames=Results$NewsI,
+                                      
+                                      Y1AxisName=YAxisName,
+                                      Y2AxisName="Maximum DropDown Left",
+                                      Y3AxisName=Y3Name,
+                                      
+                                      Y1HoverName =YHover,
+                                      Y2HoverName="LeftMaxDD",
+                                      Y3HoverName="LeftGoodDays"
+                                    )
+        
+        ListOfCriticalNews=merge(Results, NewsTickerI, by.x="NewsI", by.y="event", all.x=TRUE)
+        ListOfCriticalNews=unique(ListOfCriticalNews$Name)
+        ListOfCriticalNews <- ListOfCriticalNews[!is.na(ListOfCriticalNews)]
+        DaysOfImportantNews$Change=NULL
+        DaysWhenCriticalNewsReported=DaysOfImportantNews
+        RETURN=list(CriticalRemovalPlot,NonFilterCriticalReturn ,ListOfCriticalNews, DaysWhenCriticalNewsReported)
+        
+        return(RETURN)
+        }
+
+###----------END---------------------------------Funtion Effect of filtering critical changes---------------------------------###
+#################################################################################################################################
+
+
+
+
+
+
+
+
+###############################################################################################################################
+########---------------start---------------------DATA for daily returns------------------------------------------------########
+###############################################################################################################################
+
+Daility=ForexData[TF=="1 day", ]
+Daility$Return=abs(Daility$h-Daility$l)/Daility$l*100 #Calcaulte returns as
+
+Daility=Daility[,c(  "Date",    "Return","TickerNam")]
+Daility$Date=as.Date(Daility$Date,  format ="%Y-%m-%d")
+
+########---------------end-----------------------DATA for daily returns------------------------------------------------########
+###############################################################################################################################
+
+
+
+
+
+###############################################################################################################################
+########---------------start---------------------DATA for swings-------------------------------------------------------########
+###############################################################################################################################
+## Swings are calcualte on 1 minute candle data, then for each day the maximum swings is calcualted. The idea is to create the 
+## same data format as in the returns so the same fucntion for ploting can be used. When no swings ocurs value is set to 0
+
+ForexData=ForexData[TF=="1 min", ]
+ForexData[,c("o", "h","l", "v","TF")]=NULL
+
+
+PAIRS=unique(Daility$TickerNam)
+SwingsData=data.frame()
+for ( I in PAIRS){
+    DataI=ForexData[TickerNam==I, ] #Select data for pair I
+    
+    SizeSwinsI=ZigZag_Frequency.Swings(DataI$c,change=PerCorrection) #Calculate size of swings for a given correction
+    
+    SwingsI=data.frame(Swings=ZigZag_Swings.Points(DataI$c,change=PerCorrection)) #Price point at which the swing occured. used to find the Candle where the swin happend
+    
+    
+    SwingsI$X=DataI$X
+    SwingsI=na.omit(SwingsI) 
+    SwingsI=SwingsI[1:(nrow(SwingsI)-1),] #To select the start position of the  swings, the last row needs to be removed
+    
+    SwingsI$SizeSwins=SizeSwinsI #Apend the position of swins to their size
+    SwingsI$Swings=NULL
+    
+    SwingsI=merge(DataI, SwingsI, by="X", all.x=TRUE)
+    
+    SwingsI$Date=as.Date(SwingsI$Date,  format ="%Y-%m-%d")
+    SwingsI <- SwingsI %>% mutate(SizeSwins = ifelse(is.na(SizeSwins), 0, SizeSwins)) #candles that did not get any swings are set to cero
+    
+    SwingsI= SwingsI %>% group_by(Date) %>% summarise(MaxSwin = max(SizeSwins, na.rm=T)) #Get maximum swins in every day day
+    
+    SwingsI$TickerNam=I
+      
+    SwingsData=rbind(SwingsData, SwingsI)
+    }
+
+#Remove data not needed t clear RAM.
+rm(ForexData, DataI)
+
+SwingsData=as.data.frame(SwingsData)
+
+###############################################################################################################################
+########---------------end---------------------DATA for swings---------------------------------------------------------########
+###############################################################################################################################
+
+
+
+
+
+
+
+
+
+
+###############################################################################################################################
+###-------------------------------------------------Create Plot-------------------------------------------------------------###
+###############################################################################################################################
+
+CriticalNewsByPair_Returns=c()
+CriticalNewsByPair_SwinsOnly=c() # a smaller subject of the news, which cold increase the amount of time to trade.
+
+
+#Returns by news event
+for (TickerX in PAIRS){
+  
+#Plot returns by news  
+    Subset=Daility[TickerNam==TickerX, ]
+    Date=Subset$Date
+    Change=Subset$Return
+    NewsTickerX = News %>% filter(Ocurrence %in% "_D_")
+    NewsTickerX$event=paste0("(",NewsTickerX$currency,") ",NewsTickerX$event)
+    Plot=PlotReturnsByNews(TickerX, Date=Date, Change=Change,News=NewsTickerX)
+
+#Plot effect on returns of filtering news
+    YName=paste0("Critical Returns Left at ",MinDDWanted ,"% in ", TickerX)
+    Returns=PlotFilteringNews (Ticker=TickerX, Date=Date, Change=Change,News=News, CriticalThreshold=MinDDWanted, YHover="CritReturnsLeft",YAxisName=YName, FreqNewExc)
+
+
+#Plot effect on swings of filtering news
+    SwingsData=as.data.table(SwingsData)
+    SubsetSwing=SwingsData[TickerNam==TickerX, ]
+    
+    DateSwings=SubsetSwing$Date
+    ChangeSwings=SubsetSwing$MaxSwin
+    
+    YName=paste0("Critical Swings Left at ",ZigZagDDWated ,"% in ", TickerX)
+    Swings=PlotFilteringNews (Ticker=TickerX, Date=DateSwings, Change=ChangeSwings,News=News, CriticalThreshold=ZigZagDDWated, YHover="CritSwingsLeft",YAxisName=YName, FreqNewExc)
+
+assign(paste0("ReturnRangeByNews_",TickerX), Plot)
+assign(paste0("CriticalReturns_",TickerX), Returns[[1]])
+assign(paste0("NonFiltereReturns_",TickerX), Returns[[2]])
+assign(paste0("CriticalSwings_",TickerX), Swings[[1]])
+assign(paste0("NonFiltereSwings_",TickerX), Swings[[2]])
+
+#compile list of crtiical news by each pair...given both citical retruns and swings
+    NameCriticalNewsReturns=c(Returns[[3]],Swings[[3]])
+    if(!is_empty(NameCriticalNewsReturns)){
+      NewsCritic=data.frame(Ticker=TickerX, NameCriticalNews=NameCriticalNewsReturns); 
+      CriticalNewsByPair_Returns=rbind(CriticalNewsByPair_Returns, NewsCritic)}
+    
+
+##############list of news and days with critical swins only. Used to potentailly increase number of dates tradings
+    #compile list of crtiical news by each pair...given both citical retruns and swings
+    NameCriticalNewsSwings=c(Swings[[3]])
+    if(!is_empty(NameCriticalNewsSwings)){
+      NewsCritic=data.frame(Ticker=TickerX,NameCriticalNews=NameCriticalNewsSwings); 
+      CriticalNewsByPair_SwinsOnly=rbind(CriticalNewsByPair_SwinsOnly, NewsCritic)}
+    
+      }
+
+write.csv(CriticalNewsByPair_Returns, "News01_CriticalNews_ListByPair_ReturnsAndSwing.csv")
+
+
+write.csv(CriticalNewsByPair_SwinsOnly, "News01_CriticalNews_ListByPair_SwingsOnly.csv")
+
+
+```
+
+
+
+Below we show the effect of news releases on daily returns and swings. 
+</br>
+Critical returns are defined as days when the price range was larger than ``r MinDDWanted``% daily.
+</br>
+Critical swings are defined as times when price corrections larger than ``r   PerCorrection`` did not occurred after price extensions larger than ``r   ZigZagDDWated``%. Basically, the price got extended by up to ``r   ZigZagDDWated``% before there was a correction of ``r   PerCorrection``%. 
+
+
+
+$$\\[.0009in]$$  
+
+
+# AUDCAD
+<details>
+
+Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_AUDCAD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_AUDCAD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_AUDCAD)
+```
+</details>  
+
+Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_AUDCAD
+```
+
+
+
+<details>
+  <summary>Non filtered swings</summary>
+```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_AUDCAD)
+```
+</details>
+</details>
+
+
+$$\\[.0009in]$$  
+
+
+
+
+# AUDCHF
+<details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_AUDCHF
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_AUDCHF
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_AUDCHF)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_AUDCHF
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_AUDCHF)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+# AUDJPY
+  <details>
+  
+  Range of returns by news release days.
+
+
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_AUDJPY
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_AUDJPY
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_AUDJPY)
+```
+</details>  
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_AUDJPY
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_AUDJPY)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+# AUDNZD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_AUDNZD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_AUDNZD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_AUDNZD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_AUDNZD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_AUDNZD)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+  
+# AUDUSD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_AUDUSD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_AUDUSD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_AUDUSD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_AUDUSD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_AUDUSD)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+  
+# CADCHF
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_CADCHF
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_CADCHF
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_CADCHF)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_CADCHF
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_CADCHF)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# CADJPY
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_CADJPY
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_CADJPY
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_CADJPY)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_CADJPY
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_CADJPY)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# CHFJPY
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_CHFJPY
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_CHFJPY
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_CHFJPY)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_CHFJPY
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_CHFJPY)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# EURAUD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_EURAUD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_EURAUD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_EURAUD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_EURAUD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_EURAUD)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# EURCAD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_EURCAD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_EURCAD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_EURCAD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_EURCAD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_EURCAD)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+# EURCHF
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_EURCHF
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_EURCHF
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_EURCHF)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_EURCHF
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_EURCHF)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+  
+  
+# EURGBP
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_EURGBP
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_EURGBP
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_EURGBP)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_EURGBP
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_EURGBP)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+# EURJPY
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_EURJPY
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_EURJPY
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_EURJPY)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_EURJPY
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_EURJPY)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# EURNZD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_EURNZD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_EURNZD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_EURNZD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_EURNZD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_EURNZD)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# EURUSD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_EURUSD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_EURUSD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_EURUSD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_EURUSD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_EURUSD)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# GBPAUD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_GBPAUD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_GBPAUD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_GBPAUD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_GBPAUD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_GBPAUD)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# GBPCAD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_GBPCAD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_GBPCAD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_GBPCAD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_GBPCAD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_GBPCAD)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+# GBPCHF
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_GBPCHF
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_GBPCHF
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_GBPCHF)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_GBPCHF
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_GBPCHF)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# GBPJPY
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_GBPJPY
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_GBPJPY
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_GBPJPY)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_GBPJPY
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_GBPJPY)
+```
+</details> 
+  </details> 
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+# GBPNZD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_GBPNZD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_GBPNZD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_GBPNZD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_GBPNZD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_GBPNZD)
+```
+</details> 
+  </details> 
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# GBPUSD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_GBPUSD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_GBPUSD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_GBPUSD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_GBPUSD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_GBPUSD)
+```
+</details> 
+  </details>
+  
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+# NZDCAD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_NZDCAD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_NZDCAD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_NZDCAD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_NZDCAD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_NZDCAD)
+```
+</details> 
+  </details>
+  
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+  
+# NZDCHF
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_NZDCHF
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_NZDCHF
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_NZDCHF)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_NZDCHF
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_NZDCHF)
+```
+</details> 
+  </details>
+  
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+# NZDJPY
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_NZDJPY
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_NZDJPY
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_NZDJPY)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_NZDJPY
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_NZDJPY)
+```
+</details> 
+  </details>
+  
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+# NZDUSD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_NZDUSD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_NZDUSD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_NZDUSD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_NZDUSD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_NZDUSD)
+```
+</details> 
+  </details>
+  
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+# USDCAD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_USDCAD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_USDCAD
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_USDCAD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_USDCAD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_USDCAD)
+```
+</details> 
+  </details>
+  
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+  
+# USDCHF
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_USDCHF
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_USDCHF
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_USDCHF)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_USDCHF
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_USDCHF)
+```
+</details> 
+  </details>
+  
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+# USDJPY
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_USDJPY
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalReturns_USDJPY
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_USDJPY)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_USDJPY
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_USDJPY)
+```
+</details> 
+  </details>
+  
+  $$\\[.0009in]$$  
+  
+  
+  
+# XAUUSD
+  <details>
+  
+  Range of returns by news release days.
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10, fig.height = 6}
+ReturnRangeByNews_XAUUSD
+```
+
+
+Effects on returns
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+
+CriticalReturns_XAUUSD
+
+```
+
+
+
+<details>
+  <summary>Non filtered returns</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereReturns_XAUUSD)
+```
+</details> 
+  
+  
+  Effects on swings
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE, fig.align = 'center', fig.width =10}
+CriticalSwings_XAUUSD
+```
+
+
+<details>
+  <summary>Non filtered swings</summary>
+  ```{r, echo=FALSE, eval=TRUE}
+#do tABLE
+knitr::kable(NonFiltereSwings_XAUUSD)
+```
+</details> 
+  </details> 
+  
+  
+  $$\\[.0009in]$$  
+  
+  [AUDCAD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_AUDCAD.html) 
+[AUDCHF](https://camilo-mora.github.io/OptiMoraR/SwingsNews_AUDCHF.html)
+[AUDJPY](https://camilo-mora.github.io/OptiMoraR/SwingsNews_AUDJPY.html)
+[AUDNZD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_AUDNZD.html) 
+[AUDUSD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_AUDUSD.html) 
+[CADJPY](https://camilo-mora.github.io/OptiMoraR/SwingsNews_CADJPY.html) 
+[CADCHF](https://camilo-mora.github.io/OptiMoraR/SwingsNews_CADCHF.html) 
+[CHFJPY](https://camilo-mora.github.io/OptiMoraR/SwingsNews_CHFJPY.html) 
+[EURAUD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_EURAUD.html) 
+[EURCAD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_EURCAD.html) 
+[EURCHF](https://camilo-mora.github.io/OptiMoraR/SwingsNews_EURCHF.html) 
+[EURGBP](https://camilo-mora.github.io/OptiMoraR/SwingsNews_EURGBP.html) 
+[EURJPY](https://camilo-mora.github.io/OptiMoraR/SwingsNews_EURJPY.html) 
+[EURNZD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_EURNZD.html) 
+[EURUSD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_EURUSD.html) 
+[GBPAUD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_GBPAUD.html) 
+[GBPCAD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_GBPCAD.html) 
+[GBPCHF](https://camilo-mora.github.io/OptiMoraR/SwingsNews_GBPCHF.html) 
+[GBPJPY](https://camilo-mora.github.io/OptiMoraR/SwingsNews_GBPJPY.html) 
+[GBPNZD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_GBPNZD.html) 
+[GBPUSD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_GBPUSD.html) 
+[NZDCAD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_NZDCAD.html) 
+[NZDCHF](https://camilo-mora.github.io/OptiMoraR/SwingsNews_NZDCHF.html) 
+[NZDJPY](https://camilo-mora.github.io/OptiMoraR/SwingsNews_NZDJPY.html) 
+[NZDUSD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_NZDUSD.html) 
+[USDCAD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_USDCAD.html) 
+[USDCHF](https://camilo-mora.github.io/OptiMoraR/SwingsNews_USDCHF.html) 
+[USDJPY](https://camilo-mora.github.io/OptiMoraR/SwingsNews_USDJPY.html) 
+[XAUUSD](https://camilo-mora.github.io/OptiMoraR/SwingsNews_XAUUSD.html) 
+[ALL](https://camilo-mora.github.io/OptiMoraR/SwingsByALLPairs.html) 
