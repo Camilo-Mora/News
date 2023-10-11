@@ -1,0 +1,130 @@
+currency,event
+AUD,Cash Rate
+AUD,CPI q/q
+AUD,CPI y/y
+AUD,Employment Change
+AUD,GDP q/q
+AUD,Monetary Policy Meeting Minutes
+AUD,Parliamentary Elections
+AUD,RBA Gov Lowe Speaks
+AUD,RBA Gov-Designate Bullock Speaks
+AUD,RBA Monetary Policy Statement
+AUD,RBA Rate Statement
+AUD,Retail Sales m/m
+AUD,Trimmed Mean CPI q/q
+AUD,Unemployment Rate
+AUD,Wage Price Index q/q
+CAD,BOC Business Outlook Survey
+CAD,BOC Gov Macklem Speaks
+CAD,BOC Monetary Policy Report
+CAD,BOC Press Conference
+CAD,BOC Rate Statement
+CAD,Core Retail Sales m/m
+CAD,CPI m/m
+CAD,Employment Change
+CAD,Federal Election
+CAD,GDP m/m
+CAD,Median CPI y/y
+CAD,Overnight Rate
+CAD,Trimmed CPI y/y
+CAD,Unemployment Rate
+CHF,CPI m/m
+CHF,SNB Monetary Policy Assessment
+CHF,SNB Policy Rate
+CHF,SNB Press Conference
+EUR,CPI Flash Estimate y/y
+EUR,ECB President Lagarde Speaks
+EUR,ECB Press Conference
+EUR,Euro Summit
+EUR,French Flash Manufacturing PMI
+EUR,French Flash Services PMI
+EUR,French Presidential Election
+EUR,German Federal Elections
+EUR,German Flash Manufacturing PMI
+EUR,German Flash Services PMI
+EUR,German ifo Business Climate
+EUR,German Prelim CPI m/m
+EUR,Italian Parliamentary Election
+EUR,Main Refinancing Rate
+EUR,Monetary Policy Statement
+EUR,Spanish Flash CPI y/y
+GBP,Annual Budget Release
+GBP,Asset Purchase Facility
+GBP,Autumn Forecast Statement
+GBP,Bank Stress Test Results
+GBP,BOE Gov Bailey Speaks
+GBP,BOE Monetary Policy Report
+GBP,Claimant Count Change
+GBP,CPI y/y
+GBP,Flash Manufacturing PMI
+GBP,Flash Services PMI
+GBP,GDP m/m
+GBP,Govt Confidence Vote
+GBP,Monetary Policy Report Hearings
+GBP,Monetary Policy Summary
+GBP,MPC Asset Purchase Facility Votes
+GBP,MPC Member Broadbent Speaks
+GBP,MPC Member Saunders Speaks
+GBP,MPC Official Bank Rate Votes
+GBP,Official Bank Rate
+GBP,Prelim GDP q/q
+GBP,Retail Sales m/m
+JPY,BOJ Gov Ueda Speaks
+JPY,BOJ Outlook Report
+JPY,BOJ Press Conference
+JPY,Monetary Policy Statement
+JPY,Tokyo Core CPI y/y
+JPY,Upper House Elections
+NZD,CPI q/q
+NZD,Employment Change q/q
+NZD,GDP q/q
+NZD,Inflation Expectations q/q
+NZD,Official Cash Rate
+NZD,RBNZ Gov Orr Speaks
+NZD,RBNZ Monetary Policy Statement
+NZD,RBNZ Press Conference
+NZD,RBNZ Rate Statement
+NZD,Unemployment Rate
+USD,ADP Non-Farm Employment Change
+USD,Advance GDP q/q
+USD,Average Hourly Earnings m/m
+USD,CB Consumer Confidence
+USD,Congressional Elections
+USD,Core CPI m/m
+USD,Core PCE Price Index m/m
+USD,Core PPI m/m
+USD,Core Retail Sales m/m
+USD,CPI m/m
+USD,CPI y/y
+USD,Empire State Manufacturing Index
+USD,Employment Cost Index q/q
+USD,Fed Announcement
+USD,Fed Chair Powell Speaks
+USD,Fed Chair Powell Testifies
+USD,Federal Funds Rate
+USD,Final GDP q/q
+USD,Flash Manufacturing PMI
+USD,Flash Services PMI
+USD,FOMC Economic Projections
+USD,FOMC Meeting Minutes
+USD,FOMC Member Bullard Speaks
+USD,FOMC Member Williams Speaks
+USD,FOMC Press Conference
+USD,FOMC Statement
+USD,Housing Starts
+USD,ISM Manufacturing PMI
+USD,ISM Services PMI
+USD,JOLTS Job Openings
+USD,Non-Farm Employment Change
+USD,Philly Fed Manufacturing Index
+USD,PPI m/m
+USD,Prelim GDP q/q
+USD,Prelim UoM Consumer Sentiment
+USD,President Biden Speaks
+USD,Retail Sales m/m
+USD,Revised UoM Consumer Sentiment
+USD,S&P/CS Composite-20 HPI y/y
+USD,Treasury Currency Report
+USD,Treasury Sec Yellen Speaks
+USD,Unemployment Claims
+USD,Unemployment Rate

@@ -252,8 +252,9 @@ PlotFilteringNews <- function(Ticker, Date,Change,News, CriticalThreshold, YHove
                                     )
         
         ListOfCriticalNews=merge(Results, NewsTickerI, by.x="NewsI", by.y="event", all.x=TRUE)
-        ListOfCriticalNews=unique(ListOfCriticalNews$Name)
-        ListOfCriticalNews <- ListOfCriticalNews[!is.na(ListOfCriticalNews)]
+        ListOfCriticalNews =ListOfCriticalNews %>% distinct(Name, currency)
+        ListOfCriticalNews <- ListOfCriticalNews[complete.cases(ListOfCriticalNews), ] 
+       
         DaysOfImportantNews$Change=NULL
         DaysWhenCriticalNewsReported=DaysOfImportantNews
         RETURN=list(CriticalRemovalPlot,NonFilterCriticalReturn ,ListOfCriticalNews, DaysWhenCriticalNewsReported)
@@ -386,7 +387,9 @@ assign(paste0("CriticalSwings_",TickerX), Swings[[1]])
 assign(paste0("NonFiltereSwings_",TickerX), Swings[[2]])
 
 #compile list of crtiical news by each pair...given both citical retruns and swings
-    NameCriticalNewsReturns=c(Returns[[3]],Swings[[3]])
+    NameCriticalNewsReturns=data.frame(rbind(Returns[[3]],Swings[[3]]))
+    NameCriticalNewsReturns =NameCriticalNewsReturns %>% distinct(Name, currency) #slect uniques
+            
     if(!is_empty(NameCriticalNewsReturns)){
       NewsCritic=data.frame(Ticker=TickerX, NameCriticalNews=NameCriticalNewsReturns); 
       CriticalNewsByPair_Returns=rbind(CriticalNewsByPair_Returns, NewsCritic)}
@@ -401,9 +404,10 @@ assign(paste0("NonFiltereSwings_",TickerX), Swings[[2]])
     
       }
 
+colnames(CriticalNewsByPair_Returns)=c("Pair", "Event", "Currency")
 write.csv(CriticalNewsByPair_Returns, "News01_CriticalNews_ListByPair_ReturnsAndSwing.csv")
 
-
+colnames(CriticalNewsByPair_SwinsOnly)=c("Pair", "Event", "Currency")
 write.csv(CriticalNewsByPair_SwinsOnly, "News01_CriticalNews_ListByPair_SwingsOnly.csv")
 
 

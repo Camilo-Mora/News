@@ -1,5 +1,16 @@
 #Display teime series of candles, while poitning out position of critical zigzags and returns
 
+#library(sqldf)
+library(htmltools)
+library(dygraphs)
+library(purrr)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(Stocks)
+library(zoo)
+library(data.table)
+
 setwd("D:/Scrips/Trading/News/")
 
 #Complete list of news
@@ -143,16 +154,7 @@ PlotFilteringNews <- function(Ticker, Date,Change,News, CriticalThreshold, YHove
 
 
 
-#library(sqldf)
-library(htmltools)
-library(dygraphs)
-library(purrr)
-library(dplyr)
-library(ggplot2)
-library(plotly)
-library(Stocks)
-library(zoo)
-library(data.table)
+
 
 MinDDWanted=2 #percent of account wanted to be at maximum DD for this pair. 
 ZigZagDDWated=2 #largest etesion in price used for sqing selection...used smaller than the returns DD wated..
