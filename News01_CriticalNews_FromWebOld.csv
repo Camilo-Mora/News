@@ -1,0 +1,240 @@
+Currency,Event
+AUD,AIG Manufacturing Index
+AUD,Cash Rate
+AUD,Construction Work Done q/q
+AUD,CPI y/y
+AUD,Employment Change
+AUD,Flash Manufacturing PMI
+AUD,Flash Services PMI
+AUD,G20 Meetings
+AUD,GDP q/q
+AUD,IMF Meetings
+AUD,NAB Business Confidence
+AUD,NAB Quarterly Business Confidence
+AUD,OPEC Meetings
+AUD,OPEC-JMMC Meetings
+AUD,PPI q/q
+AUD,Producer Price Index (PPI)
+AUD,RBA Rate Statement
+AUD,Retail Sales m/m
+AUD,Unemployment Rate
+AUD,WEF Annual Meetings
+CAD,Building Permits m/m
+CAD,Capacity Utilization Rate
+CAD,CPI m/m
+CAD,Employment Change
+CAD,G20 Meetings
+CAD,G7 Meetings
+CAD,GDP m/m
+CAD,Housing Starts
+CAD,IMF Meetings
+CAD,industrial Product Price Index (IPPI)
+CAD,IPPI m/m
+CAD,Ivey PMI
+CAD,Manufacturing PMI
+CAD,OPEC Meetings
+CAD,OPEC-JMMC Meetings
+CAD,Overnight Rate
+CAD,Retail Sales m/m
+CAD,Unemployment Rate
+CAD,WEF Annual Meetings
+CHF,CPI m/m
+CHF,G20 Meetings
+CHF,G7 Meetings
+CHF,GDP q/q
+CHF,IMF Meetings
+CHF,Manufacturing PMI
+CHF,OPEC Meetings
+CHF,OPEC-JMMC Meetings
+CHF,Real Retail Sales
+CHF,Retail Sales y/y
+CHF,SECO Consumer Climate
+CHF,SNB Monetary Policy Assessment
+CHF,Unemployment Rate
+CHF,WEF Annual Meetings
+EUR,Belgian NBB Business Climate
+EUR,Consumer Confidence
+EUR,Core CPI Flash Estimate y/y
+EUR,CPI Flash Estimate y/y
+EUR,ECB Press Conference
+EUR,ECOFIN Meetings
+EUR,Eurogroup Meetings
+EUR,Final Core CPI y/y
+EUR,Final CPI y/y
+EUR,Final Employment Change q/q
+EUR,Final Manufacturing PMI
+EUR,Final Services PMI
+EUR,Flash Employment Change q/q
+EUR,Flash GDP q/q
+EUR,Flash Manufacturing PMI
+EUR,Flash Services PMI
+EUR,French Final CPI m/m
+EUR,French Final Manufacturing PMI
+EUR,French Final Services PMI
+EUR,French Flash Manufacturing PMI
+EUR,French Flash Services PMI
+EUR,French Prelim CPI m/m
+EUR,French Prelim GDP q/q
+EUR,G20 Meetings
+EUR,G7 Meetings
+EUR,German Final CPI m/m
+EUR,German Final GDP q/q
+EUR,German Final Manufacturing PMI
+EUR,German Final Services PMI
+EUR,German Flash Manufacturing PMI
+EUR,German Flash Services PMI
+EUR,German GfK Consumer Climate
+EUR,German ifo Business Climate
+EUR,German Prelim CPI m/m
+EUR,German Retail Sales m/m
+EUR,German Unemployment Change
+EUR,IMF Meetings
+EUR,Industrial Production m/m
+EUR,Italian Manufacturing PMI
+EUR,Italian Monthly Unemployment Rate
+EUR,Italian Prelim CPI m/m
+EUR,Italian Quarterly Unemployment Rate
+EUR,Italian Retail Sales m/m
+EUR,Italian Services PMI
+EUR,Main Refinancing Rate
+EUR,Monetary Policy Statement
+EUR,OPEC Meetings
+EUR,OPEC-JMMC Meetings
+EUR,Retail Sales m/m
+EUR,Revised GDP q/q
+EUR,Sentix Investor Confidence
+EUR,Spanish Flash CPI y/y
+EUR,Spanish Manufacturing PMI
+EUR,Spanish Services PMI
+EUR,Spanish Unemployment Change
+EUR,Spanish Unemployment Rate
+EUR,Unemployment Rate
+EUR,WEF Annual Meetings
+GBP,All Retailers sales
+GBP,Claimant Count Change
+GBP,Construction PMI
+GBP,Core CPI y/y
+GBP,CPI y/y
+GBP,Factory production
+GBP,Final GDP q/q
+GBP,Final Manufacturing PMI
+GBP,Final Services PMI
+GBP,Flash Manufacturing PMI
+GBP,Flash Services PMI
+GBP,G20 Meetings
+GBP,G7 Meetings
+GBP,GDP m/m
+GBP,GfK Consumer Confidence
+GBP,Govt Confidence Vote
+GBP,House Price Index (HPI)
+GBP,HPI y/y
+GBP,IMF Meetings
+GBP,Jobless Claims
+GBP,Manufacturing Production m/m
+GBP,MPC Official Bank Rate Votes
+GBP,NIESR GDP Estimate
+GBP,Official Bank Rate
+GBP,OPEC Meetings
+GBP,OPEC-JMMC Meetings
+GBP,Prelim GDP q/q
+GBP,Retail Sales m/m
+GBP,Sales Volume
+GBP,Unemployment Change
+GBP,Unemployment Rate
+GBP,WEF Annual Meetings
+JPY,BOJ Core CPI y/y
+JPY,BOJ Press Conference
+JPY,Consumer Confidence
+JPY,Corporate Goods Price Index (CGPI)
+JPY,Final GDP Price Index y/y
+JPY,Final GDP q/q
+JPY,Final Manufacturing PMI
+JPY,Flash Manufacturing PMI
+JPY,G20 Meetings
+JPY,G7 Meetings
+JPY,Housing Starts y/y
+JPY,IMF Meetings
+JPY,Monetary Policy Statement
+JPY,National Core CPI y/y
+JPY,OPEC Meetings
+JPY,OPEC-JMMC Meetings
+JPY,PPI y/y
+JPY,Prelim GDP Price Index y/y
+JPY,Prelim GDP q/q
+JPY,Prelim Industrial Production m/m
+JPY,Producer Price Index (PPI)
+JPY,Retail Sales y/y
+JPY,Retail Trade
+JPY,Revised Industrial Production m/m
+JPY,Tokyo Core CPI y/y
+JPY,Unemployment Rate
+JPY,WEF Annual Meetings
+NZD,ANZ Business Confidence
+NZD,Building Consents m/m
+NZD,BusinessNZ Manufacturing Index
+NZD,CPI q/q
+NZD,Employment Change q/q
+NZD,G20 Meetings
+NZD,G7 Meetings
+NZD,GDP q/q
+NZD,IMF Meetings
+NZD,Manufacturing Sales q/q
+NZD,NZIER Business Confidence
+NZD,Official Cash Rate
+NZD,OPEC Meetings
+NZD,OPEC-JMMC Meetings
+NZD,Performance of Manufacturing Index
+NZD,RBNZ Press Conference
+NZD,RBNZ Rate Statement
+NZD,Retail Sales q/q
+NZD,Unemployment Rate
+NZD,WEF Annual Meetings
+NZD,Westpac Consumer Sentiment
+USD,Advance GDP Price Index q/q
+USD,Advance GDP q/q
+USD,Capacity Utilization Rate
+USD,CB Consumer Confidence
+USD,Chicago PMI
+USD,Core CPI m/m
+USD,Core Durable Goods Orders m/m
+USD,Core Retail Sales m/m
+USD,CPI m/m
+USD,CPI y/y
+USD,Durable Goods Orders m/m
+USD,Employment Change
+USD,Existing Home Sales
+USD,Factory Output
+USD,Federal Funds Rate
+USD,Final GDP Price Index q/q
+USD,Final GDP q/q
+USD,Final Manufacturing PMI
+USD,Final Services PMI
+USD,Flash Manufacturing PMI
+USD,Flash Services PMI
+USD,FOMC Meeting Minutes
+USD,FOMC Press Conference
+USD,FOMC Statement
+USD,G20 Meetings
+USD,G7 Meetings
+USD,Home Resales
+USD,IBD/TIPP Economic Optimism
+USD,IMF Meetings
+USD,Industrial Production m/m
+USD,ISM Manufacturing PMI
+USD,ISM Services PMI
+USD,New Home Sales
+USD,New Residential Sales
+USD,NFP
+USD,Non-Farm Payrolls
+USD,OPEC Meetings
+USD,OPEC-JMMC Meetings
+USD,Pending Home Sales m/m
+USD,Pending Resales
+USD,PPI m/m
+USD,Prelim GDP Price Index q/q
+USD,Prelim GDP q/q
+USD,Producer Price Index (PPI)
+USD,Retail Sales m/m
+USD,Unemployment Claims
+USD,Unemployment Rate
+USD,WEF Annual Meetings

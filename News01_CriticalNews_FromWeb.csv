@@ -1,240 +1,753 @@
 Currency,Event
-AUD,AIG Manufacturing Index
-AUD,Cash Rate
-AUD,Construction Work Done q/q
+AUD,BOC Gov Macklem Speaks
+AUD,Core Retail Sales m/m
+AUD,Ivey PMI
+AUD,Retail Sales m/m
 AUD,CPI y/y
 AUD,Employment Change
-AUD,Flash Manufacturing PMI
-AUD,Flash Services PMI
-AUD,G20 Meetings
 AUD,GDP q/q
-AUD,IMF Meetings
-AUD,NAB Business Confidence
-AUD,NAB Quarterly Business Confidence
-AUD,OPEC Meetings
+AUD,RBA Gov Lowe Speaks
+AUD,SNB Chairman Jordan Speaks
+AUD,SNB Monetary Policy Assessment
+AUD,SNB Policy Rate
+AUD,SNB Press Conference
+AUD,Unemployment Rate
+AUD,Employment Change
+AUD,Monetary Policy Meeting Minutes
+AUD,RBA Monetary Policy Statement
+AUD,Unemployment Rate
+AUD,WEF Annual Meetings
+AUD,CPI q/q
 AUD,OPEC-JMMC Meetings
-AUD,PPI q/q
-AUD,Producer Price Index (PPI)
-AUD,RBA Rate Statement
+AUD,Trimmed Mean CPI q/q
+AUD,ADP Non-Farm Employment Change
+AUD,Average Hourly Earnings m/m
+AUD,Core PPI m/m
+AUD,Core Retail Sales m/m
+AUD,Crude Oil Inventories
+AUD,Fed Chair Powell Speaks
+AUD,Federal Funds Rate
+AUD,FOMC Meeting Minutes
+AUD,FOMC Press Conference
+AUD,FOMC Statement
+AUD,Industrial Production m/m
+AUD,ISM Manufacturing PMI
+AUD,ISM Services PMI
+AUD,JOLTS Job Openings
+AUD,Monetary Policy Meeting Minutes
+AUD,Non-Farm Employment Change
+AUD,OPEC-JMMC Meetings
+AUD,PPI m/m
+AUD,RBA Gov Lowe Speaks
+AUD,RBA Monetary Policy Statement
 AUD,Retail Sales m/m
 AUD,Unemployment Rate
 AUD,WEF Annual Meetings
-CAD,Building Permits m/m
-CAD,Capacity Utilization Rate
+CAD,CPI m/m
+CAD,SNB Monetary Policy Assessment
+CAD,SNB Policy Rate
+CAD,SNB Press Conference
+CAD,WEF Annual Meetings
+CAD,BOC Gov Macklem Speaks
+CAD,BOJ Outlook Report
+CAD,BOJ Press Conference
+CAD,Common CPI y/y
+CAD,Core Retail Sales m/m
 CAD,CPI m/m
 CAD,Employment Change
-CAD,G20 Meetings
-CAD,G7 Meetings
 CAD,GDP m/m
-CAD,Housing Starts
-CAD,IMF Meetings
-CAD,industrial Product Price Index (IPPI)
-CAD,IPPI m/m
 CAD,Ivey PMI
-CAD,Manufacturing PMI
-CAD,OPEC Meetings
-CAD,OPEC-JMMC Meetings
-CAD,Overnight Rate
+CAD,Median CPI y/y
+CAD,Monetary Policy Statement
 CAD,Retail Sales m/m
+CAD,Trimmed CPI y/y
 CAD,Unemployment Rate
 CAD,WEF Annual Meetings
-CHF,CPI m/m
-CHF,G20 Meetings
-CHF,G7 Meetings
-CHF,GDP q/q
-CHF,IMF Meetings
-CHF,Manufacturing PMI
-CHF,OPEC Meetings
-CHF,OPEC-JMMC Meetings
-CHF,Real Retail Sales
-CHF,Retail Sales y/y
-CHF,SECO Consumer Climate
+CHF,BOJ Gov Kuroda Speaks
+CHF,BOJ Press Conference
+CHF,Monetary Policy Statement
 CHF,SNB Monetary Policy Assessment
-CHF,Unemployment Rate
-CHF,WEF Annual Meetings
-EUR,Belgian NBB Business Climate
-EUR,Consumer Confidence
+CHF,SNB Policy Rate
+CHF,SNB Press Conference
+EUR,Cash Rate
+EUR,CPI Flash Estimate y/y
+EUR,ECB President Lagarde Speaks
+EUR,German Final Manufacturing PMI
+EUR,RBA Gov Lowe Speaks
+EUR,RBA Rate Statement
+EUR,BOC Gov Macklem Speaks
+EUR,BOC Rate Statement
 EUR,Core CPI Flash Estimate y/y
 EUR,CPI Flash Estimate y/y
+EUR,ECB President Lagarde Speaks
 EUR,ECB Press Conference
-EUR,ECOFIN Meetings
-EUR,Eurogroup Meetings
-EUR,Final Core CPI y/y
-EUR,Final CPI y/y
-EUR,Final Employment Change q/q
-EUR,Final Manufacturing PMI
-EUR,Final Services PMI
-EUR,Flash Employment Change q/q
-EUR,Flash GDP q/q
-EUR,Flash Manufacturing PMI
-EUR,Flash Services PMI
-EUR,French Final CPI m/m
-EUR,French Final Manufacturing PMI
-EUR,French Final Services PMI
-EUR,French Flash Manufacturing PMI
-EUR,French Flash Services PMI
-EUR,French Prelim CPI m/m
-EUR,French Prelim GDP q/q
-EUR,G20 Meetings
-EUR,G7 Meetings
-EUR,German Final CPI m/m
-EUR,German Final GDP q/q
-EUR,German Final Manufacturing PMI
-EUR,German Final Services PMI
-EUR,German Flash Manufacturing PMI
-EUR,German Flash Services PMI
-EUR,German GfK Consumer Climate
-EUR,German ifo Business Climate
-EUR,German Prelim CPI m/m
-EUR,German Retail Sales m/m
-EUR,German Unemployment Change
-EUR,IMF Meetings
-EUR,Industrial Production m/m
-EUR,Italian Manufacturing PMI
-EUR,Italian Monthly Unemployment Rate
-EUR,Italian Prelim CPI m/m
-EUR,Italian Quarterly Unemployment Rate
-EUR,Italian Retail Sales m/m
-EUR,Italian Services PMI
+EUR,Ivey PMI
 EUR,Main Refinancing Rate
 EUR,Monetary Policy Statement
-EUR,OPEC Meetings
 EUR,OPEC-JMMC Meetings
-EUR,Retail Sales m/m
-EUR,Revised GDP q/q
-EUR,Sentix Investor Confidence
-EUR,Spanish Flash CPI y/y
-EUR,Spanish Manufacturing PMI
-EUR,Spanish Services PMI
+EUR,Overnight Rate
 EUR,Spanish Unemployment Change
-EUR,Spanish Unemployment Rate
-EUR,Unemployment Rate
-EUR,WEF Annual Meetings
-GBP,All Retailers sales
-GBP,Claimant Count Change
-GBP,Construction PMI
-GBP,Core CPI y/y
+EUR,ECB President Lagarde Speaks
+EUR,G20 Meetings
+EUR,Core CPI Flash Estimate y/y
+EUR,CPI Flash Estimate y/y
+EUR,ECB President Lagarde Speaks
+EUR,Flash Manufacturing PMI
+EUR,Flash Services PMI
+EUR,French Flash Manufacturing PMI
+EUR,French Flash Services PMI
+EUR,German Flash Manufacturing PMI
+EUR,German Flash Services PMI
+EUR,Monetary Policy Report Hearings
+EUR,BOJ Gov Kuroda Speaks
+EUR,ECB Monetary Policy Meeting Accounts
+EUR,Euro Summit
+EUR,Flash Manufacturing PMI
+EUR,Flash Services PMI
+EUR,French Flash Manufacturing PMI
+EUR,French Flash Services PMI
+EUR,German Flash Manufacturing PMI
+EUR,German Flash Services PMI
+EUR,Inflation Expectations q/q
+EUR,OPEC-JMMC Meetings
+EUR,Spanish Unemployment Change
+EUR,Advance GDP Price Index q/q
+EUR,Advance GDP q/q
+EUR,Chicago PMI
+EUR,Core Durable Goods Orders m/m
+EUR,Core PCE Price Index m/m
+EUR,Durable Goods Orders m/m
+EUR,ECB Press Conference
+EUR,Main Refinancing Rate
+EUR,Monetary Policy Statement
+EUR,OPEC-JMMC Meetings
+EUR,Pending Home Sales m/m
+EUR,Unemployment Claims
 GBP,CPI y/y
-GBP,Factory production
-GBP,Final GDP q/q
-GBP,Final Manufacturing PMI
-GBP,Final Services PMI
+GBP,Monetary Policy Meeting Minutes
+GBP,MPC Member Saunders Speaks
+GBP,Retail Sales m/m
+GBP,Wage Price Index q/q
+GBP,BOC Gov Macklem Speaks
+GBP,GDP m/m
+GBP,BOE Inflation Letter
+GBP,G20 Meetings
+GBP,GDP m/m
+GBP,Gov Board Member Zurbrugg Speaks
+GBP,Monetary Policy Summary
+GBP,MPC Member Pill Speaks
+GBP,MPC Official Bank Rate Votes
+GBP,Official Bank Rate
+GBP,Retail Sales m/m
+GBP,SNB Monetary Policy Assessment
+GBP,SNB Policy Rate
+GBP,SNB Press Conference
+GBP,WEF Annual Meetings
+GBP,Annual Budget Release
+GBP,BOE Gov Bailey Speaks
+GBP,BOJ Press Conference
 GBP,Flash Manufacturing PMI
 GBP,Flash Services PMI
-GBP,G20 Meetings
-GBP,G7 Meetings
 GBP,GDP m/m
-GBP,GfK Consumer Confidence
-GBP,Govt Confidence Vote
-GBP,House Price Index (HPI)
-GBP,HPI y/y
-GBP,IMF Meetings
-GBP,Jobless Claims
-GBP,Manufacturing Production m/m
-GBP,MPC Official Bank Rate Votes
-GBP,NIESR GDP Estimate
-GBP,Official Bank Rate
-GBP,OPEC Meetings
 GBP,OPEC-JMMC Meetings
-GBP,Prelim GDP q/q
 GBP,Retail Sales m/m
-GBP,Sales Volume
-GBP,Unemployment Change
+GBP,ANZ Business Confidence
+GBP,Average Earnings Index 3m/y
+GBP,Claimant Count Change
+GBP,Official Cash Rate
+GBP,RBNZ Rate Statement
+GBP,ADP Non-Farm Employment Change
+GBP,Average Earnings Index 3m/y
+GBP,Average Hourly Earnings m/m
+GBP,BOE Gov Bailey Speaks
+GBP,BOE Inflation Letter
+GBP,BOE Monetary Policy Report
+GBP,Claimant Count Change
+GBP,Core CPI m/m
+GBP,CPI m/m
+GBP,CPI y/y
+GBP,Crude Oil Inventories
+GBP,Fed Chair Powell Speaks
+GBP,Federal Funds Rate
+GBP,FOMC Economic Projections
+GBP,FOMC Meeting Minutes
+GBP,FOMC Member Bullard Speaks
+GBP,FOMC Member Mester Speaks
+GBP,FOMC Press Conference
+GBP,FOMC Statement
+GBP,ISM Manufacturing PMI
+GBP,ISM Manufacturing Prices
+GBP,ISM Services PMI
+GBP,JOLTS Job Openings
+GBP,Monetary Policy Summary
+GBP,MPC Official Bank Rate Votes
+GBP,Non-Farm Employment Change
+GBP,Official Bank Rate
+GBP,OPEC-JMMC Meetings
+GBP,Pending Home Sales m/m
+GBP,Philly Fed Manufacturing Index
+GBP,Prelim GDP q/q
+GBP,Treasury Sec Yellen Speaks
+GBP,Unemployment Claims
 GBP,Unemployment Rate
-GBP,WEF Annual Meetings
-JPY,BOJ Core CPI y/y
-JPY,BOJ Press Conference
-JPY,Consumer Confidence
-JPY,Corporate Goods Price Index (CGPI)
-JPY,Final GDP Price Index y/y
-JPY,Final GDP q/q
-JPY,Final Manufacturing PMI
-JPY,Flash Manufacturing PMI
-JPY,G20 Meetings
-JPY,G7 Meetings
-JPY,Housing Starts y/y
-JPY,IMF Meetings
-JPY,Monetary Policy Statement
-JPY,National Core CPI y/y
-JPY,OPEC Meetings
-JPY,OPEC-JMMC Meetings
-JPY,PPI y/y
-JPY,Prelim GDP Price Index y/y
-JPY,Prelim GDP q/q
-JPY,Prelim Industrial Production m/m
-JPY,Producer Price Index (PPI)
-JPY,Retail Sales y/y
-JPY,Retail Trade
-JPY,Revised Industrial Production m/m
-JPY,Tokyo Core CPI y/y
-JPY,Unemployment Rate
-JPY,WEF Annual Meetings
-NZD,ANZ Business Confidence
-NZD,Building Consents m/m
-NZD,BusinessNZ Manufacturing Index
+NZD,Building Permits m/m
+NZD,Common CPI y/y
+NZD,CPI m/m
+NZD,CPI q/q
+NZD,G20 Meetings
+NZD,Median CPI y/y
+NZD,OPEC-JMMC Meetings
+NZD,Trimmed CPI y/y
+NZD,Annual Budget Release
 NZD,CPI q/q
 NZD,Employment Change q/q
-NZD,G20 Meetings
 NZD,G7 Meetings
-NZD,GDP q/q
-NZD,IMF Meetings
-NZD,Manufacturing Sales q/q
-NZD,NZIER Business Confidence
+NZD,Gov Board Member Maechler Speaks
 NZD,Official Cash Rate
-NZD,OPEC Meetings
-NZD,OPEC-JMMC Meetings
-NZD,Performance of Manufacturing Index
+NZD,RBNZ Monetary Policy Statement
 NZD,RBNZ Press Conference
 NZD,RBNZ Rate Statement
-NZD,Retail Sales q/q
+NZD,SNB Chairman Jordan Speaks
+NZD,SNB Monetary Policy Assessment
+NZD,SNB Policy Rate
+NZD,SNB Press Conference
 NZD,Unemployment Rate
 NZD,WEF Annual Meetings
-NZD,Westpac Consumer Sentiment
+NZD,BOJ Gov Kuroda Speaks
+NZD,BOJ Press Conference
+NZD,CPI q/q
+NZD,G20 Meetings
+NZD,Inflation Expectations q/q
+NZD,Jackson Hole Symposium
+NZD,Monetary Policy Statement
+NZD,RBNZ Gov Orr Speaks
+NZD,WEF Annual Meetings
+NZD,30-y Bond Auction
+NZD,ADP Non-Farm Employment Change
+NZD,CB Consumer Confidence
+NZD,Core CPI m/m
+NZD,Core PCE Price Index m/m
+NZD,Core PPI m/m
+NZD,Core Retail Sales m/m
+NZD,CPI m/m
+NZD,CPI y/y
+NZD,Crude Oil Inventories
+NZD,Existing Home Sales
+NZD,Fed Chair Powell SpeaksOfficial Cash Rate
+NZD,Fed Chair Powell Testifies
+NZD,Final GDP q/q
+NZD,FOMC Member Bostic Speaks
+NZD,FOMC Member Bowman Speaks
+NZD,FOMC Member Brainard Speaks
+NZD,FOMC Member Bullard Speaks
+NZD,FOMC Member George Speaks
+NZD,FOMC Member Mester Speaks
+NZD,FOMC Member Waller Speaks
+NZD,Industrial Production m/m
+NZD,Inflation Expectations q/q
+NZD,ISM Services PMI
+NZD,Official Cash Rate
+NZD,OPEC-JMMC Meetings
+NZD,Philly Fed Manufacturing Index
+NZD,PPI m/m
+NZD,RBNZ Monetary Policy Statement
+NZD,RBNZ Press Conference
+NZD,RBNZ Rate Statement
+NZD,Retail Sales m/m
+NZD,Revised UoM Consumer Sentiment
+NZD,Unemployment Claims
+NZD,WEF Annual Meetings
+USD,10-y Bond Auction
+USD,BOC Gov Macklem Speaks
+USD,BOC Rate Statement
+USD,CB Consumer Confidence
+USD,Common CPI y/y
+USD,Core CPI m/m
+USD,Core Durable Goods Orders m/m
+USD,CPI m/m
+USD,CPI y/y
+USD,Crude Oil Inventories
+USD,Durable Goods Orders m/m
+USD,Federal Funds Rate
+USD,FOMC Economic Projections
+USD,FOMC Meeting Minutes
+USD,FOMC Member Brainard Speaks
+USD,FOMC Member George Speaks
+USD,FOMC Member Mester Speaks
+USD,FOMC Member Waller Speaks
+USD,FOMC Press Conference
+USD,FOMC Statement
+USD,G20 Meetings
+USD,ISM Services PMI
+USD,Median CPI y/y
+USD,Overnight Rate
+USD,Richmond Manufacturing Index
+USD,Treasury Currency Report
+USD,Treasury Sec Yellen Speaks
+USD,Trimmed CPI y/y
+USD,Unemployment Claims
+USD,WEF Annual Meetings
+USD,30-y Bond Auction
 USD,Advance GDP Price Index q/q
 USD,Advance GDP q/q
-USD,Capacity Utilization Rate
+USD,Chicago PMI
+USD,Core CPI m/m
+USD,Core Durable Goods Orders m/m
+USD,Core PPI m/m
+USD,CPI m/m
+USD,CPI y/y
+USD,Durable Goods Orders m/m
+USD,Federal Funds Rate
+USD,Flash Manufacturing PMI
+USD,Flash Services PMI
+USD,FOMC Economic Projections
+USD,FOMC Press Conference
+USD,FOMC Statement
+USD,G20 Meetings
+USD,ISM Services PMI
+USD,KOF Economic Barometer
+USD,Pending Home Sales m/m
+USD,PPI m/m
+USD,SNB Chairman Jordan Speaks
+USD,SNB Monetary Policy Assessment
+USD,SNB Policy Rate
+USD,SNB Press Conference
+USD,Treasury Sec Yellen Speaks
+USD,Unemployment Claims
+USD,10-y Bond Auction
+USD,ADP Non-Farm Employment Change
+USD,BOJ Press Conference
+USD,CB Consumer Confidence
+USD,Chicago PMI
+USD,Core Durable Goods Orders m/m
+USD,Crude Oil Inventories
+USD,Durable Goods Orders m/m
+USD,Federal Funds Rate
+USD,FOMC Member Waller Speaks
+USD,FOMC Press Conference
+USD,FOMC Statement
+USD,G20 Meetings
+USD,JOLTS Job Openings
+USD,Pending Home Sales m/m
+USD,Unemployment Claims
+XAU,30-y Bond Auction
+XAU,ADP Non-Farm Employment Change
+XAU,Average Hourly Earnings m/m
+XAU,CB Consumer Confidence
+XAU,Chicago PMI
+XAU,Core CPI m/m
+XAU,Core Durable Goods Orders m/m
+XAU,Core PPI m/m
+XAU,Core Retail Sales m/m
+XAU,CPI m/m
+XAU,CPI y/y
+XAU,Crude Oil Inventories
+XAU,Durable Goods Orders m/m
+XAU,Empire State Manufacturing Index
+XAU,Fed Chair Powell Speaks
+XAU,Fed Chair Powell Testifies
+XAU,Federal Funds Rate
+XAU,Final GDP q/q
+XAU,Flash Manufacturing PMI
+XAU,Flash Services PMI
+XAU,FOMC Meeting Minutes
+XAU,FOMC Member Bostic Speaks
+XAU,FOMC Member Bullard Speaks
+XAU,FOMC Member Clarida Speaks
+XAU,FOMC Member Evans Speaks
+XAU,FOMC Member Waller Speaks
+XAU,FOMC Member Williams Speaks
+XAU,FOMC Press Conference
+XAU,FOMC Statement
+XAU,ISM Manufacturing PMI
+XAU,ISM Manufacturing Prices
+XAU,ISM Services PMI
+XAU,Non-Farm Employment Change
+XAU,OPEC-JMMC Meetings
+XAU,Pending Home Sales m/m
+XAU,Philly Fed Manufacturing Index
+XAU,PPI m/m
+XAU,Prelim UoM Consumer Sentiment
+XAU,Prelim UoM Inflation Expectations
+XAU,President Biden Speaks
+XAU,Retail Sales m/m
+XAU,Treasury Currency Report
+XAU,Treasury Sec Yellen Speaks
+XAU,Unemployment Claims
+XAU,Unemployment Rate
+CAD,BOC Gov Macklem Speaks
+CAD,Core Retail Sales m/m
+CAD,Ivey PMI
+CAD,Retail Sales m/m
+CHF,CPI y/y
+CHF,Employment Change
+CHF,GDP q/q
+CHF,RBA Gov Lowe Speaks
+CHF,SNB Chairman Jordan Speaks
+CHF,SNB Monetary Policy Assessment
+CHF,SNB Policy Rate
+CHF,SNB Press Conference
+CHF,Unemployment Rate
+JPY,Employment Change
+JPY,Monetary Policy Meeting Minutes
+JPY,RBA Monetary Policy Statement
+JPY,Unemployment Rate
+JPY,WEF Annual Meetings
+NZD,CPI q/q
+NZD,OPEC-JMMC Meetings
+NZD,Trimmed Mean CPI q/q
+USD,ADP Non-Farm Employment Change
+USD,Average Hourly Earnings m/m
+USD,Core PPI m/m
+USD,Core Retail Sales m/m
+USD,Crude Oil Inventories
+USD,Fed Chair Powell Speaks
+USD,Federal Funds Rate
+USD,FOMC Meeting Minutes
+USD,FOMC Press Conference
+USD,FOMC Statement
+USD,Industrial Production m/m
+USD,ISM Manufacturing PMI
+USD,ISM Services PMI
+USD,JOLTS Job Openings
+USD,Monetary Policy Meeting Minutes
+USD,Non-Farm Employment Change
+USD,OPEC-JMMC Meetings
+USD,PPI m/m
+USD,RBA Gov Lowe Speaks
+USD,RBA Monetary Policy Statement
+USD,Retail Sales m/m
+USD,Unemployment Rate
+USD,WEF Annual Meetings
+CHF,CPI m/m
+CHF,SNB Monetary Policy Assessment
+CHF,SNB Policy Rate
+CHF,SNB Press Conference
+CHF,WEF Annual Meetings
+JPY,BOC Gov Macklem Speaks
+JPY,BOJ Outlook Report
+JPY,BOJ Press Conference
+JPY,Common CPI y/y
+JPY,Core Retail Sales m/m
+JPY,CPI m/m
+JPY,Employment Change
+JPY,GDP m/m
+JPY,Ivey PMI
+JPY,Median CPI y/y
+JPY,Monetary Policy Statement
+JPY,Retail Sales m/m
+JPY,Trimmed CPI y/y
+JPY,Unemployment Rate
+JPY,WEF Annual Meetings
+JPY,BOJ Gov Kuroda Speaks
+JPY,BOJ Press Conference
+JPY,Monetary Policy Statement
+JPY,SNB Monetary Policy Assessment
+JPY,SNB Policy Rate
+JPY,SNB Press Conference
+AUD,Cash Rate
+AUD,CPI Flash Estimate y/y
+AUD,ECB President Lagarde Speaks
+AUD,German Final Manufacturing PMI
+AUD,RBA Gov Lowe Speaks
+AUD,RBA Rate Statement
+CAD,BOC Gov Macklem Speaks
+CAD,BOC Rate Statement
+CAD,Core CPI Flash Estimate y/y
+CAD,CPI Flash Estimate y/y
+CAD,ECB President Lagarde Speaks
+CAD,ECB Press Conference
+CAD,Ivey PMI
+CAD,Main Refinancing Rate
+CAD,Monetary Policy Statement
+CAD,OPEC-JMMC Meetings
+CAD,Overnight Rate
+CAD,Spanish Unemployment Change
+CHF,ECB President Lagarde Speaks
+CHF,G20 Meetings
+GBP,Core CPI Flash Estimate y/y
+GBP,CPI Flash Estimate y/y
+GBP,ECB President Lagarde Speaks
+GBP,Flash Manufacturing PMI
+GBP,Flash Services PMI
+GBP,French Flash Manufacturing PMI
+GBP,French Flash Services PMI
+GBP,German Flash Manufacturing PMI
+GBP,German Flash Services PMI
+GBP,Monetary Policy Report Hearings
+JPY,BOJ Gov Kuroda Speaks
+JPY,ECB Monetary Policy Meeting Accounts
+JPY,Euro Summit
+JPY,Flash Manufacturing PMI
+JPY,Flash Services PMI
+JPY,French Flash Manufacturing PMI
+JPY,French Flash Services PMI
+JPY,German Flash Manufacturing PMI
+JPY,German Flash Services PMI
+NZD,Inflation Expectations q/q
+NZD,OPEC-JMMC Meetings
+NZD,Spanish Unemployment Change
+USD,Advance GDP Price Index q/q
+USD,Advance GDP q/q
+USD,Chicago PMI
+USD,Core Durable Goods Orders m/m
+USD,Core PCE Price Index m/m
+USD,Durable Goods Orders m/m
+USD,ECB Press Conference
+USD,Main Refinancing Rate
+USD,Monetary Policy Statement
+USD,OPEC-JMMC Meetings
+USD,Pending Home Sales m/m
+USD,Unemployment Claims
+AUD,CPI y/y
+AUD,Monetary Policy Meeting Minutes
+AUD,MPC Member Saunders Speaks
+AUD,Retail Sales m/m
+AUD,Wage Price Index q/q
+CAD,BOC Gov Macklem Speaks
+CAD,GDP m/m
+CHF,BOE Inflation Letter
+CHF,G20 Meetings
+CHF,GDP m/m
+CHF,Gov Board Member Zurbrugg Speaks
+CHF,Monetary Policy Summary
+CHF,MPC Member Pill Speaks
+CHF,MPC Official Bank Rate Votes
+CHF,Official Bank Rate
+CHF,Retail Sales m/m
+CHF,SNB Monetary Policy Assessment
+CHF,SNB Policy Rate
+CHF,SNB Press Conference
+CHF,WEF Annual Meetings
+JPY,Annual Budget Release
+JPY,BOE Gov Bailey Speaks
+JPY,BOJ Press Conference
+JPY,Flash Manufacturing PMI
+JPY,Flash Services PMI
+JPY,GDP m/m
+JPY,OPEC-JMMC Meetings
+JPY,Retail Sales m/m
+NZD,ANZ Business Confidence
+NZD,Average Earnings Index 3m/y
+NZD,Claimant Count Change
+NZD,Official Cash Rate
+NZD,RBNZ Rate Statement
+USD,ADP Non-Farm Employment Change
+USD,Average Earnings Index 3m/y
+USD,Average Hourly Earnings m/m
+USD,BOE Gov Bailey Speaks
+USD,BOE Inflation Letter
+USD,BOE Monetary Policy Report
+USD,Claimant Count Change
+USD,Core CPI m/m
+USD,CPI m/m
+USD,CPI y/y
+USD,Crude Oil Inventories
+USD,Fed Chair Powell Speaks
+USD,Federal Funds Rate
+USD,FOMC Economic Projections
+USD,FOMC Meeting Minutes
+USD,FOMC Member Bullard Speaks
+USD,FOMC Member Mester Speaks
+USD,FOMC Press Conference
+USD,FOMC Statement
+USD,ISM Manufacturing PMI
+USD,ISM Manufacturing Prices
+USD,ISM Services PMI
+USD,JOLTS Job Openings
+USD,Monetary Policy Summary
+USD,MPC Official Bank Rate Votes
+USD,Non-Farm Employment Change
+USD,Official Bank Rate
+USD,OPEC-JMMC Meetings
+USD,Pending Home Sales m/m
+USD,Philly Fed Manufacturing Index
+USD,Prelim GDP q/q
+USD,Treasury Sec Yellen Speaks
+USD,Unemployment Claims
+USD,Unemployment Rate
+CAD,Building Permits m/m
+CAD,Common CPI y/y
+CAD,CPI m/m
+CAD,CPI q/q
+CAD,G20 Meetings
+CAD,Median CPI y/y
+CAD,OPEC-JMMC Meetings
+CAD,Trimmed CPI y/y
+CHF,Annual Budget Release
+CHF,CPI q/q
+CHF,Employment Change q/q
+CHF,G7 Meetings
+CHF,Gov Board Member Maechler Speaks
+CHF,Official Cash Rate
+CHF,RBNZ Monetary Policy Statement
+CHF,RBNZ Press Conference
+CHF,RBNZ Rate Statement
+CHF,SNB Chairman Jordan Speaks
+CHF,SNB Monetary Policy Assessment
+CHF,SNB Policy Rate
+CHF,SNB Press Conference
+CHF,Unemployment Rate
+CHF,WEF Annual Meetings
+JPY,BOJ Gov Kuroda Speaks
+JPY,BOJ Press Conference
+JPY,CPI q/q
+JPY,G20 Meetings
+JPY,Inflation Expectations q/q
+JPY,Jackson Hole Symposium
+JPY,Monetary Policy Statement
+JPY,RBNZ Gov Orr Speaks
+JPY,WEF Annual Meetings
+USD,30-y Bond Auction
+USD,ADP Non-Farm Employment Change
+USD,CB Consumer Confidence
+USD,Core CPI m/m
+USD,Core PCE Price Index m/m
+USD,Core PPI m/m
+USD,Core Retail Sales m/m
+USD,CPI m/m
+USD,CPI y/y
+USD,Crude Oil Inventories
+USD,Existing Home Sales
+USD,Fed Chair Powell SpeaksOfficial Cash Rate
+USD,Fed Chair Powell Testifies
+USD,Final GDP q/q
+USD,FOMC Member Bostic Speaks
+USD,FOMC Member Bowman Speaks
+USD,FOMC Member Brainard Speaks
+USD,FOMC Member Bullard Speaks
+USD,FOMC Member George Speaks
+USD,FOMC Member Mester Speaks
+USD,FOMC Member Waller Speaks
+USD,Industrial Production m/m
+USD,Inflation Expectations q/q
+USD,ISM Services PMI
+USD,Official Cash Rate
+USD,OPEC-JMMC Meetings
+USD,Philly Fed Manufacturing Index
+USD,PPI m/m
+USD,RBNZ Monetary Policy Statement
+USD,RBNZ Press Conference
+USD,RBNZ Rate Statement
+USD,Retail Sales m/m
+USD,Revised UoM Consumer Sentiment
+USD,Unemployment Claims
+USD,WEF Annual Meetings
+CAD,10-y Bond Auction
+CAD,BOC Gov Macklem Speaks
+CAD,BOC Rate Statement
+CAD,CB Consumer Confidence
+CAD,Common CPI y/y
+CAD,Core CPI m/m
+CAD,Core Durable Goods Orders m/m
+CAD,CPI m/m
+CAD,CPI y/y
+CAD,Crude Oil Inventories
+CAD,Durable Goods Orders m/m
+CAD,Federal Funds Rate
+CAD,FOMC Economic Projections
+CAD,FOMC Meeting Minutes
+CAD,FOMC Member Brainard Speaks
+CAD,FOMC Member George Speaks
+CAD,FOMC Member Mester Speaks
+CAD,FOMC Member Waller Speaks
+CAD,FOMC Press Conference
+CAD,FOMC Statement
+CAD,G20 Meetings
+CAD,ISM Services PMI
+CAD,Median CPI y/y
+CAD,Overnight Rate
+CAD,Richmond Manufacturing Index
+CAD,Treasury Currency Report
+CAD,Treasury Sec Yellen Speaks
+CAD,Trimmed CPI y/y
+CAD,Unemployment Claims
+CAD,WEF Annual Meetings
+CHF,30-y Bond Auction
+CHF,Advance GDP Price Index q/q
+CHF,Advance GDP q/q
+CHF,Chicago PMI
+CHF,Core CPI m/m
+CHF,Core Durable Goods Orders m/m
+CHF,Core PPI m/m
+CHF,CPI m/m
+CHF,CPI y/y
+CHF,Durable Goods Orders m/m
+CHF,Federal Funds Rate
+CHF,Flash Manufacturing PMI
+CHF,Flash Services PMI
+CHF,FOMC Economic Projections
+CHF,FOMC Press Conference
+CHF,FOMC Statement
+CHF,G20 Meetings
+CHF,ISM Services PMI
+CHF,KOF Economic Barometer
+CHF,Pending Home Sales m/m
+CHF,PPI m/m
+CHF,SNB Chairman Jordan Speaks
+CHF,SNB Monetary Policy Assessment
+CHF,SNB Policy Rate
+CHF,SNB Press Conference
+CHF,Treasury Sec Yellen Speaks
+CHF,Unemployment Claims
+JPY,10-y Bond Auction
+JPY,ADP Non-Farm Employment Change
+JPY,BOJ Press Conference
+JPY,CB Consumer Confidence
+JPY,Chicago PMI
+JPY,Core Durable Goods Orders m/m
+JPY,Crude Oil Inventories
+JPY,Durable Goods Orders m/m
+JPY,Federal Funds Rate
+JPY,FOMC Member Waller Speaks
+JPY,FOMC Press Conference
+JPY,FOMC Statement
+JPY,G20 Meetings
+JPY,JOLTS Job Openings
+JPY,Pending Home Sales m/m
+JPY,Unemployment Claims
+USD,30-y Bond Auction
+USD,ADP Non-Farm Employment Change
+USD,Average Hourly Earnings m/m
 USD,CB Consumer Confidence
 USD,Chicago PMI
 USD,Core CPI m/m
 USD,Core Durable Goods Orders m/m
+USD,Core PPI m/m
 USD,Core Retail Sales m/m
 USD,CPI m/m
 USD,CPI y/y
+USD,Crude Oil Inventories
 USD,Durable Goods Orders m/m
-USD,Employment Change
-USD,Existing Home Sales
-USD,Factory Output
+USD,Empire State Manufacturing Index
+USD,Fed Chair Powell Speaks
+USD,Fed Chair Powell Testifies
 USD,Federal Funds Rate
-USD,Final GDP Price Index q/q
 USD,Final GDP q/q
-USD,Final Manufacturing PMI
-USD,Final Services PMI
 USD,Flash Manufacturing PMI
 USD,Flash Services PMI
 USD,FOMC Meeting Minutes
+USD,FOMC Member Bostic Speaks
+USD,FOMC Member Bullard Speaks
+USD,FOMC Member Clarida Speaks
+USD,FOMC Member Evans Speaks
+USD,FOMC Member Waller Speaks
+USD,FOMC Member Williams Speaks
 USD,FOMC Press Conference
 USD,FOMC Statement
-USD,G20 Meetings
-USD,G7 Meetings
-USD,Home Resales
-USD,IBD/TIPP Economic Optimism
-USD,IMF Meetings
-USD,Industrial Production m/m
 USD,ISM Manufacturing PMI
+USD,ISM Manufacturing Prices
 USD,ISM Services PMI
-USD,New Home Sales
-USD,New Residential Sales
-USD,NFP
-USD,Non-Farm Payrolls
-USD,OPEC Meetings
+USD,Non-Farm Employment Change
 USD,OPEC-JMMC Meetings
 USD,Pending Home Sales m/m
-USD,Pending Resales
+USD,Philly Fed Manufacturing Index
 USD,PPI m/m
-USD,Prelim GDP Price Index q/q
-USD,Prelim GDP q/q
-USD,Producer Price Index (PPI)
+USD,Prelim UoM Consumer Sentiment
+USD,Prelim UoM Inflation Expectations
+USD,President Biden Speaks
 USD,Retail Sales m/m
+USD,Treasury Currency Report
+USD,Treasury Sec Yellen Speaks
 USD,Unemployment Claims
 USD,Unemployment Rate
-USD,WEF Annual Meetings
